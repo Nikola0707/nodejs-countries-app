@@ -3,7 +3,13 @@ const app = express();
 
 app.use(express.json());
 
-let countries = [];
+let countries = [
+  {
+    "name": "Macedonia",
+    "capital": "Skopje",
+    "population": "2000000"
+}
+];
 
 app
   .get("/countries", (req, res) => {
@@ -34,12 +40,17 @@ app
     const reqName = req.params.name;
     try {
       const index = countries.findIndex((country) => country.name == reqName);
-      const { name, capital, population } = req.body;
-      countries[index].name = name;
-      countries[index].capital = capital;
-      countries[index].population = population;
+      if(index > -1){
+        const { name, capital, population } = req.body;
+        countries[index].name = name;
+        countries[index].capital = capital;
+        countries[index].population = population;  
+        res.send(countries);
+      }else{
+        countries.push(req.body);
+        res.send(countries);
+      }
 
-      res.send(countries);
     } catch (error) {
       res.status(500).send("Error");
     }
